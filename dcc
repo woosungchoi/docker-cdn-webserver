@@ -14,9 +14,9 @@ fi
 
 if [ "$1" == "setup" ]; then
   echo 'Setting system...' \
-  && read -p "Enter your origin domain (ex: mydomain.com) : " DOMAIN
+  && read -p "Enter your Origin domain (ex: mydomain.com) : " DOMAIN
   read -p "Enter your CDN domain (ex: cdn.mydomain.com) : " CDN_DOMAIN
-  read -p "Enter your email address for SSL certificate (ex: myemail@email.com) : " EMAIL \
+  read -p "Enter your Email address for SSL certificate (ex: myemail@email.com) : " EMAIL \
   && cd /home; sudo git clone https://github.com/woosungchoi/docker-gnuboard-cdn \
   && sudo chown -R $USER /home/docker-gnuboard-cdn \
   && cd docker-gnuboard-cdn; git clone https://github.com/woosungchoi/my-image-cdn \
