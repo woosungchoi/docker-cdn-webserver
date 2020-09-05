@@ -40,7 +40,7 @@ curl -o dc https://raw.githubusercontent.com/woosungchoi/docker-gnuboard-cdn/mas
 ### For Centos 8 users
 
 ```bash
-sudo yum -y update && sudo yum install -y curl git cron
+sudo yum -y update && sudo yum install -y curl git crontabs
 ```
 
 ```bash
