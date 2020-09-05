@@ -1,0 +1,14 @@
+ssl_certificate /etc/letsencrypt/live/<cdn_host>/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/<cdn_host>/privkey.pem;
+ssl_trusted_certificate /etc/letsencrypt/live/<cdn_host>/chain.pem;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "no-referrer-when-downgrade" always;
+add_header Content-Security-Policy "default-src * data: 'unsafe-eval' 'unsafe-inline'" always;
+# add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+# enable strict transport security only if you understand the implications
+ssl_stapling on;
+ssl_stapling_verify on;
+resolver 8.8.8.8 8.8.4.4 valid=300s;
+resolver_timeout 10s;

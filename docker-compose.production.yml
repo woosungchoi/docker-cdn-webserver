@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ./ssl/:/etc/letsencrypt/
+      - /usr/share/nginx/html:/usr/share/nginx/html
+    command: certonly -n --webroot -w /usr/share/nginx/html -d <cdn_host>
+
+  php:
+    image: php:fpm-alpine
+    container_name: php
+    restart: unless-stopped
+    volumes:
+      - ./www:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+  nginx:
+    depends_on:
+      - php
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ssl/:/etc/letsencrypt/
+      - ./www:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/logs:/var/log/nginx/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
