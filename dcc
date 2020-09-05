@@ -17,20 +17,31 @@ if [ "$1" == "setup" ]; then
   && read -p "Enter your domain (ex:mydomain.com) : " DOMAIN
   read -p "Enter your CDN domain (ex:cdn.mydomain.com) : " CDN_DOMAIN
   read -p "Enter your email address for SSL certificate (ex:myemail@email.com) : " EMAIL \
-  && cd /home; git clone https://github.com/woosungchoi/docker-gnuboard-cdn \
+  && cd /home; sudo git clone https://github.com/woosungchoi/docker-gnuboard-cdn \
+  && sudo chown -R $USER /home/docker-gnuboard-cdn \
   && cd docker-gnuboard-cdn; git clone https://github.com/woosungchoi/my-image-cdn \
   && mv my-image-cdn/www . \
   && rm -rf my-image-cdn \
-  && chown -R 82 www \
+  && sudo chmod -R 777 www \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" nginx/conf.d/gnuboard-cdn.conf \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" nginx/conf.d/ssl-conf \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" docker-compose.yml \
-  && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" docker-compose-production.yml \
+  && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" docker-compose.production.yml \
   && sed -i "s/<origin_host>/$DOMAIN/g" www/config.php \
-  && sed -i "s/<origin_host>/$DOMAIN/g" gnuboard-cdn.conf \
+  && sed -i "s/<origin_host>/$DOMAIN/g" nginx/conf.d/gnuboard-cdn.conf \
   && sed -i "s/<email>/$EMAIL/g" docker-compose.yml \
   && echo 'Setting timezone to Asia/Seoul...' \
   && sudo timedatectl set-timezone Asia/Seoul \
+  && sudo mkdir -p /usr/share/nginx/html;
+  echo 'Preparing docker-compose up' \
+  && curl -sSLo nginx/conf.d/options-ssl-nginx https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf \
+  && sudo chmod a+x dc \
+  && sudo chmod a+x docker_upgrade_centos.sh \
+  && echo 'Configuring cron...' \
+  && echo "0 23 * * * docker start certbot && docker exec nginx nginx -s reload >> /var/log/docker_cron.log 2>&1
+0 2 * * * /home/docker-gnuboard-cdn/docker-upgrade_centos.sh >> /var/log/docker_upgrade.log 2>&11
+#10 4 * * * /usr/bin/find /home/docker-gnuboard-cdn/www -mindepth 2 -atime +10 -type f \( -iname \*.png -o -iname \*.jpg -o -iname \*.jpeg -o -iname \*.mp4 -o -iname \*.webm -o -iname \*.gif \) | xargs rm 1>/dev/null 2>/dev/null" >> cdncron \
+  && sudo crontab cdncron; rm cdncron \
   && echo 'Installing Docker...' \
   && sudo yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine \
   && sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo \
@@ -45,29 +56,13 @@ if [ "$1" == "setup" ]; then
      fi
   echo 'Installing SSL...' \
   && sudo docker-compose up \
-  && echo 'Preparing docker-compose up' \
   && sudo docker-compose down -v \
-  && sudo mkdir -p /usr/share/nginx/html;
-  curl -sSLo nginx/conf.d/options-ssl-nginx https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf \
-  && sudo chmod a+x build/docker-entrypoint.sh \
-  && sudo chmod a+x dc \
-  && sudo chmod a+x docker-upgrade_centos.sh \
-  && mv docker-compose.yml docker-compose.ssl.yml \
-  && mv docker-compose.production.yml docker-compose.yml \
-  && echo 'Configuring cron...' \
-  && echo "0 23 * * * docker start certbot && docker exec nginx nginx -s reload >> /var/log/docker_cron.log 2>&1" >> mycron \
-  && sudo crontab mycron; rm mycron \
-  && echo "0 2 * * * /home/docker-gnuboard-cdn/docker-upgrade_centos.sh >> /var/log/docker_upgrade.log 2>&1" >> dockerupgradecron \
-  && sudo crontab dockerupgradecron; rm dockerupgradecron \
-  && echo "#10 4 * * * /usr/bin/find /home/docker-gnuboard-cdn/www -mindepth 2 -atime +10 -type f \( -iname \*.png -o -iname \*.jpg -o -iname \*.jpeg -o -iname \*.mp4 -o -iname \*.webm -o -iname \*.gif \) | xargs rm 1>/dev/null 2>/dev/null" >> cdncron \
-  && sudo crontab cdncron; rm cdncron \
   && echo 'Starting Docker ...' \
+  && sudo mv docker-compose.yml docker-compose.ssl.yml \
+  && sudo mv docker-compose.production.yml docker-compose.yml \
   && sudo docker-compose up -d  \
   && echo 'Done! 🎉' \
-  && echo 'by Rafael Correa Gomes and Woosung Choi' \
+  && echo 'by Lael and Woosung Choi' \
   && echo 'Below is a list of containers.'\
-  && sudo docker-compose ps \
-  && echo 'Access your gnuboard: https://'$DOMAIN;
-  echo 'Access your phpmyadmin: https://pma.'$DOMAIN;
-  echo 'Access your portainer: https://port.'$DOMAIN;
+  && sudo docker-compose ps
 fi
