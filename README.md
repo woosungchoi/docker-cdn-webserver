@@ -1,6 +1,6 @@
-# docker-gnuboard-cdn
+# docker-cdn-webserver
 
-These are some reasons why use this Docker Compose in your `Docker gnuboard CDN` production environment.
+These are some reasons why use this Docker Compose in your `Docker CDN Webserver` production environment.
 
 ☝️ 2 command to install
 
@@ -34,7 +34,7 @@ sudo apt update -y && sudo apt upgrade -y && sudo apt install curl git cron -y &
 ```
 
 ```bash
-curl -o dc https://raw.githubusercontent.com/woosungchoi/docker-gnuboard-cdn/master/dc && bash dc setup && rm -f dc
+curl -o dc https://raw.githubusercontent.com/woosungchoi/docker-cdn-webserver/master/dc && bash dc setup && rm -f dc
 ```
 
 ### For Centos 8 users
@@ -44,7 +44,7 @@ sudo yum -y update && sudo yum install -y curl git crontabs
 ```
 
 ```bash
-curl -o dcc https://raw.githubusercontent.com/woosungchoi/docker-gnuboard-cdn/master/dcc && bash dcc setup && rm -f dcc
+curl -o dcc https://raw.githubusercontent.com/woosungchoi/docker-cdn-webserver/master/dcc && bash dcc setup && rm -f dcc
 ```
 
 ## Commands
