@@ -23,12 +23,12 @@ if [ "$1" == "setup" ]; then
   && mv my-image-cdn/www . \
   && rm -rf my-image-cdn \
   && sudo chmod -R 777 www \
-  && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" nginx/conf.d/gnuboard-cdn.conf \
+  && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" nginx/conf.d/cdn-webserver.conf \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" nginx/conf.d/ssl-conf \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" docker-compose.yml \
   && sed -i "s/<cdn_host>/$CDN_DOMAIN/g" docker-compose.production.yml \
   && sed -i "s/<origin_host>/$DOMAIN/g" www/config.php \
-  && sed -i "s/<origin_host>/$DOMAIN/g" nginx/conf.d/gnuboard-cdn.conf \
+  && sed -i "s/<origin_host>/$DOMAIN/g" nginx/conf.d/cdn-webserver.conf \
   && sed -i "s/<email>/$EMAIL/g" docker-compose.yml \
   && echo 'Setting timezone to Asia/Seoul...' \
   && sudo timedatectl set-timezone Asia/Seoul \
