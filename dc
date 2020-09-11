@@ -17,9 +17,9 @@ if [ "$1" == "setup" ]; then
   && read -p "Enter your Origin domain (ex: mydomain.com) : " DOMAIN
   read -p "Enter your CDN domain (ex: cdn.mydomain.com) : " CDN_DOMAIN
   read -p "Enter your Email address for SSL certificate (ex: myemail@email.com) : " EMAIL \
-  && cd /home; sudo git clone https://github.com/woosungchoi/docker-gnuboard-cdn \
-  && sudo chown -R $USER /home/docker-gnuboard-cdn \
-  && cd docker-gnuboard-cdn; git clone https://github.com/woosungchoi/my-image-cdn \
+  && cd /home; sudo git clone https://github.com/woosungchoi/docker-cdn-webserver \
+  && sudo chown -R $USER /home/docker-cdn-webserver \
+  && cd docker-cdn-webserver; git clone https://github.com/woosungchoi/my-image-cdn \
   && mv my-image-cdn/www . \
   && rm -rf my-image-cdn \
   && sudo chmod -R 777 www \
@@ -39,8 +39,8 @@ if [ "$1" == "setup" ]; then
   && sudo chmod a+x docker_upgrade_ubuntu.sh \
   && echo 'Configuring cron...' \
   && echo "0 23 * * * docker start certbot && docker exec nginx nginx -s reload >> /var/log/docker_cron.log 2>&1
-0 2 * * * /home/docker-gnuboard-cdn/docker-upgrade_centos.sh >> /var/log/docker_upgrade.log 2>&11
-#10 4 * * * /usr/bin/find /home/docker-gnuboard-cdn/www -mindepth 2 -atime +10 -type f \( -iname \*.png -o -iname \*.jpg -o -iname \*.jpeg -o -iname \*.mp4 -o -iname \*.webm -o -iname \*.gif \) | xargs rm 1>/dev/null 2>/dev/null" >> cdncron \
+0 2 * * * /home/docker-cdn-webserver/docker-upgrade_ubuntu.sh >> /var/log/docker_upgrade.log 2>&11
+#10 4 * * * /usr/bin/find /home/docker-cdn-webserver/www -mindepth 2 -atime +10 -type f \( -iname \*.png -o -iname \*.jpg -o -iname \*.jpeg -o -iname \*.mp4 -o -iname \*.webm -o -iname \*.gif \) | xargs rm 1>/dev/null 2>/dev/null" >> cdncron \
   && sudo crontab cdncron; rm cdncron \
   && echo 'Installing Docker...' \
   && sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y \
