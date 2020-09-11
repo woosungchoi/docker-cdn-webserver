@@ -3,6 +3,6 @@
 COMPOSE="/usr/bin/docker-compose --no-ansi"
 DOCKER="/usr/bin/docker"
 
-cd /home/docker-gnuboard-cdn/
+cd /home/docker-cdn-webserver/
 
 $COMPOSE pull && $COMPOSE up -d && $DOCKER image prune -f
